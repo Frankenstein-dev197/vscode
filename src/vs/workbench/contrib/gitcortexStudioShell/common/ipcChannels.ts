@@ -84,13 +84,13 @@ export const GitCortexStudioShellIpcChannels = {
 	},
 } as const;
 
-export type GitCortexStudioShellIpcChannel = (typeof GitCortexStudioShellIpcChannels)[keyof typeof GitCortexStudioShellIpcChannels] extends infer Nested
-	? Nested extends string
-		? Nested
-		: Nested extends object
-			? (typeof GitCortexStudioShellIpcChannels)[keyof typeof GitCortexStudioShellIpcChannels]
-			: never
-	: never;
+type LeafIpcChannel<T> = T extends string
+	? T
+	: T extends object
+		? LeafIpcChannel<T[keyof T]>
+		: never;
+
+export type GitCortexStudioShellIpcChannel = LeafIpcChannel<typeof GitCortexStudioShellIpcChannels>;
 
 /**
  * Validate that a channel received over the bridge belongs to the documented

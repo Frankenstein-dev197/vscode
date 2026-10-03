@@ -10,7 +10,7 @@ import { CancellationToken } from '../../../../base/common/cancellation.js';
 import { URI } from '../../../../base/common/uri.js';
 import { Codicon } from '../../../../base/common/codicons.js';
 import { ThemeIcon } from '../../../../base/common/themables.js';
-import { DisposableStore } from '../../../../base/common/lifecycle.js';
+import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
 import { localize } from '../../../../nls.js';
 import { ICommandService } from '../../../../platform/commands/common/commands.js';
 import { IConfigurationService } from '../../../../platform/configuration/common/configuration.js';
@@ -88,6 +88,7 @@ export class GitCortexStudioShellPage extends EditorPane {
 	private container!: HTMLElement;
 	private contentContainer!: HTMLElement;
 	private chatContainer!: HTMLElement;
+	private chatWidgetContainer: HTMLElement | undefined;
 	private vmSurface!: HTMLElement;
 	private vmWebviewHost: HTMLElement | undefined;
 	private splitDivider!: HTMLElement;
@@ -158,6 +159,9 @@ export class GitCortexStudioShellPage extends EditorPane {
 
 	override clearInput(): void {
 		this.contentDisposables.clear();
+		this.chatWidget = undefined;
+		this.chatWidgetContainer = undefined;
+		this.chatModelRef = undefined;
 		clearNode(this.container);
 		// Restore classic parts when leaving the Studio shell (e.g. developer mode file editing).
 		this.layoutService.setPartHidden(false, Parts.ACTIVITYBAR_PART);
@@ -298,9 +302,9 @@ export class GitCortexStudioShellPage extends EditorPane {
 		this.contentDisposables.add(addDisposableListener(this.splitDivider, 'keydown', (e: KeyboardEvent) => {
 			let nextRatio = this.splitState.chatRatio;
 			if (e.key === 'ArrowUp') {
-				nextRatio = clampChatRatio(nextRatio + 0.05);
-			} else if (e.key === 'ArrowDown') {
 				nextRatio = clampChatRatio(nextRatio - 0.05);
+			} else if (e.key === 'ArrowDown') {
+				nextRatio = clampChatRatio(nextRatio + 0.05);
 			} else if (e.key === 'Home') {
 				nextRatio = SPLIT_MIN_CHAT_RATIO;
 			} else if (e.key === 'End') {
@@ -336,9 +340,12 @@ export class GitCortexStudioShellPage extends EditorPane {
 
 	private ensureChatWidget(): void {
 		if (this.chatWidget) {
+			if (this.chatWidgetContainer && this.chatWidgetContainer.parentElement !== this.chatContainer) {
+				this.chatContainer.appendChild(this.chatWidgetContainer);
+			}
 			return;
 		}
-		const chatWidgetContainer = append(this.chatContainer, $('.gitcortex-studio-shell-chat-widget'));
+		const chatWidgetContainer = this.chatWidgetContainer = append(this.chatContainer, $('.gitcortex-studio-shell-chat-widget'));
 
 		const editorOverflowWidgetsDomNode = this.layoutService.getContainer(getWindow(chatWidgetContainer)).appendChild($('.chat-editor-overflow.monaco-editor'));
 		this.contentDisposables.add({ dispose: () => editorOverflowWidgetsDomNode.remove() });
@@ -380,7 +387,7 @@ export class GitCortexStudioShellPage extends EditorPane {
 		this.chatWidget.setVisible(true);
 
 		this.chatModelRef = this.chatService.startNewLocalSession(ChatAgentLocation.Chat);
-		this.contentDisposables.add(this.chatModelRef);
+		this.contentDisposables.add(toDisposable(() => this.chatModelRef?.dispose()));
 		if (this.chatModelRef.object) {
 			this.chatWidget.setModel(this.chatModelRef.object);
 		}
@@ -597,7 +604,10 @@ export class GitCortexStudioShellPage extends EditorPane {
 		const ref = await this.chatService.acquireOrLoadSession(URI.parse(resource), ChatAgentLocation.Chat, CancellationToken.None);
 		if (ref) {
 			this.setSurface('chat');
+			const previousRef = this.chatModelRef;
 			this.chatWidget?.setModel(ref.object);
+			this.chatModelRef = ref;
+			previousRef?.dispose();
 		}
 	}
 

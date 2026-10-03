@@ -93,6 +93,7 @@
 }
 
 .gitcortex-studio-shell-vm {
+	position: relative;
 	overflow: hidden;
 }
 
