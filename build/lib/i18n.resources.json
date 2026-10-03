@@ -639,6 +639,10 @@
 			"project": "vscode-workbench"
 		},
 		{
+			"name": "vs/workbench/contrib/gitcortexStudioShell",
+			"project": "vscode-workbench"
+		},
+		{
 			"name": "vs/workbench/contrib/welcomeAgentSessions",
 			"project": "vscode-workbench"
 		},

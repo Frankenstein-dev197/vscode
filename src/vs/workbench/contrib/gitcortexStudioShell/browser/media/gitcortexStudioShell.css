@@ -1,0 +1,456 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.gitcortex-studio-shell {
+	position: relative;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	background: var(--vscode-editor-background);
+	color: var(--vscode-editor-foreground, var(--vscode-foreground));
+}
+
+.gitcortex-studio-shell-navigation {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	width: 56px;
+	min-width: 56px;
+	height: 100%;
+	gap: var(--vscode-spacing-size40);
+	padding: var(--vscode-spacing-size120) var(--vscode-spacing-size40);
+	box-sizing: border-box;
+	border-right: var(--vscode-strokeThickness) solid var(--vscode-sideBar-border, var(--vscode-widget-border));
+	background: var(--vscode-sideBar-background, var(--vscode-editor-background));
+}
+
+.gitcortex-studio-shell-brand {
+	padding: var(--vscode-spacing-size40) 0 var(--vscode-spacing-size120);
+	text-align: center;
+	font-weight: var(--vscode-fontWeight-semiBold);
+	font-size: var(--vscode-fontSize-body2);
+	letter-spacing: 0.02em;
+	color: var(--vscode-sideBarTitle-foreground, var(--vscode-foreground));
+}
+
+.gitcortex-studio-shell-nav-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--vscode-spacing-size40);
+	height: 52px;
+	padding: var(--vscode-spacing-size40) var(--vscode-spacing-size20);
+	border: var(--vscode-strokeThickness) solid transparent;
+	border-radius: var(--vscode-cornerRadius-medium);
+	background: transparent;
+	color: var(--vscode-sideBar-foreground, var(--vscode-foreground));
+	cursor: pointer;
+	font: inherit;
+}
+
+.gitcortex-studio-shell-nav-item:hover {
+	background: var(--vscode-toolbar-hoverBackground, var(--vscode-list-hoverBackground));
+}
+
+.gitcortex-studio-shell-nav-item.active {
+	background: var(--vscode-settings-focusedRowBackground, var(--vscode-list-activeSelectionBackground));
+	color: var(--vscode-list-activeSelectionForeground, var(--vscode-foreground));
+}
+
+.gitcortex-studio-shell-nav-item-label {
+	font-size: var(--vscode-fontSize-label3);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 8ch;
+}
+
+.gitcortex-studio-shell-content {
+	flex: 1;
+	min-width: 0;
+	position: relative;
+	overflow: hidden;
+}
+
+.gitcortex-studio-shell-content.shell-split {
+	display: flex;
+	flex-direction: column;
+}
+
+.gitcortex-studio-shell-chat,
+.gitcortex-studio-shell-vm {
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	min-height: 0;
+}
+
+.gitcortex-studio-shell-chat {
+	margin-bottom: var(--vscode-spacing-size80);
+	overflow: hidden;
+}
+
+.gitcortex-studio-shell-vm {
+	position: relative;
+	overflow: hidden;
+}
+
+.gitcortex-studio-shell-divider {
+	height: 8px;
+	flex: 0 0 8px;
+	cursor: row-resize;
+	position: relative;
+	border-radius: var(--vscode-cornerRadius-xSmall);
+}
+
+.gitcortex-studio-shell-divider::after {
+	content: "";
+	position: absolute;
+	left: 10%;
+	right: 10%;
+	top: 50%;
+	height: 2px;
+	transform: translateY(-50%);
+	background: var(--vscode-sash-hoverBorder, var(--vscode-widget-border));
+	border-radius: var(--vscode-cornerRadius-xSmall);
+	opacity: 0.6;
+}
+
+.gitcortex-studio-shell-divider:hover::after,
+.gitcortex-studio-shell-divider:focus-visible::after {
+	background: var(--vscode-sash-hoverBorder, var(--vscode-focusBorder));
+	opacity: 1;
+	height: 3px;
+}
+
+.gitcortex-studio-shell-chat-widget {
+	width: 100%;
+	height: 100%;
+}
+
+.gitcortex-studio-shell-vm-header {
+	display: flex;
+	align-items: baseline;
+	gap: var(--vscode-spacing-size80);
+	padding: var(--vscode-spacing-size40) var(--vscode-spacing-size80);
+	border-bottom: var(--vscode-strokeThickness) solid var(--vscode-panel-border, var(--vscode-widget-border));
+	background: var(--vscode-panel-background, transparent);
+}
+
+.gitcortex-studio-shell-vm-title {
+	font-weight: var(--vscode-fontWeight-semiBold);
+	font-size: var(--vscode-fontSize-label1);
+}
+
+.gitcortex-studio-shell-vm-state {
+	font-size: var(--vscode-fontSize-body2);
+	text-transform: capitalize;
+	opacity: 0.8;
+}
+
+.gitcortex-studio-shell-vm-state.state-running {
+	color: var(--vscode-charts-green);
+}
+
+.gitcortex-studio-shell-vm-state.state-error {
+	color: var(--vscode-errorForeground);
+}
+
+.gitcortex-studio-shell-vm-body {
+	position: absolute;
+	inset: 26px 0 0 0;
+}
+
+.gitcortex-studio-shell-vm-message {
+	padding: var(--vscode-spacing-size120) var(--vscode-spacing-size160);
+	font-size: var(--vscode-fontSize-label1);
+	color: var(--vscode-descriptionForeground);
+}
+
+.gitcortex-studio-shell-vm-actions {
+	padding: var(--vscode-spacing-size120) var(--vscode-spacing-size160);
+}
+
+.gitcortex-studio-shell-vm-webview-host {
+	position: absolute;
+	inset: 0;
+}
+
+.gitcortex-studio-shell-primary-button,
+.gitcortex-studio-shell-command-button {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size60);
+	padding: var(--vscode-spacing-size60) var(--vscode-spacing-size160);
+	border: var(--vscode-strokeThickness) solid transparent;
+	border-radius: var(--vscode-cornerRadius-small);
+	background: var(--vscode-button-background);
+	color: var(--vscode-button-foreground);
+	font: inherit;
+	cursor: pointer;
+}
+
+.gitcortex-studio-shell-primary-button:hover,
+.gitcortex-studio-shell-command-button:hover {
+	background: var(--vscode-button-hoverBackground);
+}
+
+.gitcortex-studio-shell-section {
+	position: absolute;
+	inset: 24px 24px 24px 60px;
+	overflow-y: auto;
+}
+
+.gitcortex-studio-shell-section-title {
+	margin: 0 0 var(--vscode-spacing-size160);
+	font-size: var(--vscode-fontSize-heading2, var(--vscode-fontSize-label1));
+	font-weight: var(--vscode-fontWeight-semiBold);
+}
+
+.gitcortex-studio-shell-hint {
+	font-size: var(--vscode-fontSize-label1);
+	line-height: 1.5;
+	color: var(--vscode-descriptionForeground);
+	max-width: 480px;
+}
+
+.gitcortex-studio-shell-current-workspace {
+	padding: var(--vscode-spacing-size100) 0;
+	font-size: var(--vscode-fontSize-label1);
+	opacity: 0.8;
+}
+
+.gitcortex-studio-shell-session-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size40);
+	max-width: 560px;
+}
+
+.gitcortex-studio-shell-session-row {
+	text-align: left;
+	padding: var(--vscode-spacing-size80) var(--vscode-spacing-size120);
+	border: var(--vscode-strokeThickness) solid var(--vscode-widget-border);
+	border-radius: var(--vscode-cornerRadius-medium);
+	background: var(--vscode-editorWidget-background, transparent);
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+}
+
+.gitcortex-studio-shell-session-row:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.gitcortex-studio-shell-session-row.active {
+	background: var(--vscode-list-activeSelectionBackground);
+	color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Projects surface */
+.gitcortex-studio-shell-project-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size120);
+	max-width: 720px;
+}
+
+.gitcortex-studio-shell-project-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size40);
+	padding: var(--vscode-spacing-size100);
+	border: var(--vscode-strokeThickness) solid var(--vscode-widget-border);
+	border-radius: var(--vscode-cornerRadius-medium);
+}
+
+.gitcortex-studio-shell-project-header {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size80);
+	margin-bottom: var(--vscode-spacing-size40);
+}
+
+.gitcortex-studio-shell-project-name {
+	font-weight: var(--vscode-fontWeight-semiBold);
+}
+
+.gitcortex-studio-shell-project-count {
+	margin-left: auto;
+	font-size: var(--vscode-fontSize-label3);
+	color: var(--vscode-descriptionForeground);
+}
+
+/* Files surface */
+.gitcortex-studio-shell-file-roots {
+	display: flex;
+	flex-direction: column;
+	max-width: 720px;
+}
+
+.gitcortex-studio-shell-file-children {
+	display: flex;
+	flex-direction: column;
+}
+
+.gitcortex-studio-shell-file-row {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size60);
+	width: 100%;
+	padding: var(--vscode-spacing-size40) var(--vscode-spacing-size80);
+	border: none;
+	border-radius: var(--vscode-cornerRadius-small);
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.gitcortex-studio-shell-file-row:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.gitcortex-studio-shell-file-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Changes surface */
+.gitcortex-studio-shell-change-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size20);
+	max-width: 720px;
+}
+
+.gitcortex-studio-shell-change-row {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size80);
+	padding: var(--vscode-spacing-size60) var(--vscode-spacing-size100);
+	border: var(--vscode-strokeThickness) solid var(--vscode-widget-border);
+	border-radius: var(--vscode-cornerRadius-medium);
+	background: var(--vscode-editorWidget-background, transparent);
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.gitcortex-studio-shell-change-row:hover {
+	background: var(--vscode-list-hoverBackground);
+}
+
+.gitcortex-studio-shell-change-name {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.gitcortex-studio-shell-change-group {
+	font-size: var(--vscode-fontSize-label3);
+	color: var(--vscode-descriptionForeground);
+}
+
+.gitcortex-studio-shell-change-total {
+	margin-top: var(--vscode-spacing-size100);
+	font-size: var(--vscode-fontSize-label1);
+	color: var(--vscode-descriptionForeground);
+}
+
+/* Terminal surface */
+.gitcortex-studio-shell-terminal-host {
+	width: 100%;
+	height: 60vh;
+	min-height: 200px;
+	margin-bottom: var(--vscode-spacing-size80);
+}
+
+/* Git surface */
+.gitcortex-studio-shell-git-summary {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size40);
+	margin-bottom: var(--vscode-spacing-size160);
+}
+
+.gitcortex-studio-shell-git-repo {
+	font-weight: var(--vscode-fontWeight-semiBold);
+}
+
+.gitcortex-studio-shell-git-state {
+	color: var(--vscode-descriptionForeground);
+	font-size: var(--vscode-fontSize-label1);
+}
+
+.gitcortex-studio-shell-git-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--vscode-spacing-size60);
+}
+
+/* CORTEX surface */
+.gitcortex-studio-shell-cortex-roles {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size40);
+	max-width: 640px;
+}
+
+.gitcortex-studio-shell-cortex-role {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size80);
+	padding: var(--vscode-spacing-size60) var(--vscode-spacing-size100);
+	border: var(--vscode-strokeThickness) solid var(--vscode-widget-border);
+	border-radius: var(--vscode-cornerRadius-medium);
+	opacity: 0.6;
+}
+
+.gitcortex-studio-shell-cortex-role.available {
+	opacity: 1;
+	border-color: var(--vscode-charts-green);
+}
+
+.gitcortex-studio-shell-cortex-role-label {
+	font-weight: var(--vscode-fontWeight-semiBold);
+	min-width: 96px;
+}
+
+.gitcortex-studio-shell-cortex-role-desc {
+	color: var(--vscode-descriptionForeground);
+	font-size: var(--vscode-fontSize-label3);
+}
+
+/* MCP surface */
+.gitcortex-studio-shell-mcp-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--vscode-spacing-size40);
+	max-width: 640px;
+	margin-bottom: var(--vscode-spacing-size160);
+}
+
+.gitcortex-studio-shell-mcp-row {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size80);
+	padding: var(--vscode-spacing-size60) var(--vscode-spacing-size100);
+	border: var(--vscode-strokeThickness) solid var(--vscode-widget-border);
+	border-radius: var(--vscode-cornerRadius-medium);
+}
+
+.gitcortex-studio-shell-mcp-name {
+	flex: 1;
+}
+
+.gitcortex-studio-shell-mcp-transport {
+	font-size: var(--vscode-fontSize-label3);
+	color: var(--vscode-descriptionForeground);
+}
